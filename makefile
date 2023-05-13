@@ -3,3 +3,6 @@ build:
 
 run: build
 	./bin/api
+
+rm :
+	@rm -rf ./bin
