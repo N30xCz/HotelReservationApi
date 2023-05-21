@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/N30xCz/HotelReservationApi/db"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"github.com/gofiber/fiber/v2"
@@ -56,4 +58,14 @@ func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	}
 	return c.JSON(users)
 
+}
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
+	var userID = c.Params("id")
+	if err := h.userStore.DeleteUser(c.Context(), userID); err != nil {
+		return err
+	}
+	response := map[string]string{
+		"message :": fmt.Sprintf("User with the id : %s was successfully deleted ", userID),
+	}
+	return c.JSON(response)
 }
