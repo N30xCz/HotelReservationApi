@@ -20,23 +20,21 @@ type CreateUserParams struct {
 	Password  string `json:"password"`
 }
 
-func (params CreateUserParams) Validate() []string {
-	errors := []string{}
+func (params CreateUserParams) Validate() map[string]string {
+	errors := map[string]string{}
 	if len(params.FirstName) < minFirstNameLen {
-		errors = append(errors, fmt.Sprintf("First Name length should be atleast %d characters", minFirstNameLen))
+		errors["firstName"] = fmt.Sprintf("First Name length should be atleast %d characters", minFirstNameLen)
 	}
 
 	if len(params.LastName) < minLastNameLen {
-		errors = append(errors, fmt.Sprintf("Last name length should be atleast %d characters", minLastNameLen))
+		errors["lastName"] = fmt.Sprintf("Last name length should be atleast %d characters", minLastNameLen)
 	}
 	if len(params.Password) < minPasswordLen {
-		errors = append(errors, fmt.Sprintf("Password length should be atleast %d characters", minPasswordLen))
+		errors["Password"] = fmt.Sprintf("Password length should be atleast %d characters", minPasswordLen)
 	}
-	if len(params.FirstName) < minFirstNameLen {
-		errors = append(errors, fmt.Sprintf("First Name length should be atleast %d characters", minFirstNameLen))
-	}
+
 	if !isEmailValid(params.Email) {
-		errors = append(errors, fmt.Sprintf("This is not valid format of the email address"))
+		errors["email"] = "This is not valid format of the email address"
 
 	}
 	return errors
