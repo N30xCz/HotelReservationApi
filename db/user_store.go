@@ -20,7 +20,7 @@ type UserStore interface {
 type MongoUserStore struct {
 	client *mongo.Client
 	coll   *mongo.Collection
-} // Implementace UserStore pro MongoDB Interfacu
+} // Implementace UserStore pro MongoDB Interface
 
 func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 	return &MongoUserStore{
