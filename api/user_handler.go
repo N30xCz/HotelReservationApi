@@ -7,6 +7,8 @@ import (
 	"github.com/N30xCz/HotelReservationApi/db"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -75,4 +77,24 @@ func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
 		"message :": fmt.Sprintf("User with the id : %s was successfully deleted ", userID),
 	}
 	return c.JSON(response)
+}
+func (h *UserHandler) HandleUpdateUser(c *fiber.Ctx) error {
+	var (
+		update bson.M
+		userID = c.Params("id")
+	)
+	oid, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": oid}
+	if err := c.BodyParser(&update); err != nil {
+		return err
+	}
+
+	if err := h.userStore.UpdateUser(c.Context(), filter, update); err != nil {
+		return err
+	}
+	return c.JSON(map[string]string{"Updated :": userID})
+
 }
