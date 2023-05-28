@@ -6,3 +6,6 @@ run: build
 
 rm :
 	@rm -rf ./bin
+
+test:
+	@go test -v ./...
