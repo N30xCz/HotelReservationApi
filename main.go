@@ -40,5 +40,5 @@ func main() {
 	apiv1.Put("/user/:id", userHandler.HandleUpdateUser)
 	// Hotel Handlers
 	apiv1.Get("/hotels", hotelHandler.HandleGetHotels)
-	app.Listen("5000")
+	app.Listen(":5000")
 }
