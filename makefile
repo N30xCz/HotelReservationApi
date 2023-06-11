@@ -4,10 +4,11 @@ build:
 run: build
 	./bin/api
 
-rm :
+rm:
 	@rm -rf ./bin
 
 seed:
 	@go run scripts/seed.go
+	
 test:
 	@go test -v ./...

@@ -25,7 +25,7 @@ func seedHotel(name, location string) {
 		Location: location,
 		Rooms:    []primitive.ObjectID{},
 	}
-	insertedHotel, err := hotelStore.InsertHotel(ctx, &hotel)
+	insertedHotel, err := hotelStore.Insert(ctx, &hotel)
 	if err != nil {
 		log.Fatal(err)
 	}
