@@ -11,7 +11,6 @@ import (
 )
 
 const userColl = "users"
-const DBNAME = "Hotel-Reservation"
 
 type Dropper interface {
 	Drop(context.Context) error

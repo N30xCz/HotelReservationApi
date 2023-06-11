@@ -8,3 +8,18 @@ type Hotel struct {
 	Location string               `bson:"location" json:"location"`
 	Rooms    []primitive.ObjectID `bson:"rooms" json:"rooms"`
 }
+type RoomType int
+
+const (
+	SingleRoomType RoomType = iota + 1
+	DoubleRoomType
+	SeaSideRoomType
+	DeluxeRoomType
+)
+
+type Room struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Type      RoomType           `bson:"type" json:"type"`
+	BasePrice float64            `bson:"basePrice" json:"basePrice"`
+	HotelID   primitive.ObjectID `bson:"hotelID" json:"hotelID"`
+}
