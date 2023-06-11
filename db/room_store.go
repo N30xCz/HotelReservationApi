@@ -11,7 +11,6 @@ import (
 
 type RoomStore interface {
 	InsertRoom(context.Context, *types.Room) (*types.Room, error)
-	UpdateRoom(context.Context, *types.Room)
 }
 type MongoRoomStore struct {
 	client *mongo.Client
