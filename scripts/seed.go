@@ -18,12 +18,13 @@ var (
 	ctx        = context.Background()
 )
 
-func seedHotel(name, location string) {
+func seedHotel(name string, location string, raiting int) {
 
 	hotel := types.Hotel{
 		Name:     name,
 		Location: location,
 		Rooms:    []primitive.ObjectID{},
+		Raiting:  raiting,
 	}
 	insertedHotel, err := hotelStore.Insert(ctx, &hotel)
 	if err != nil {
@@ -55,9 +56,9 @@ func seedHotel(name, location string) {
 }
 
 func main() {
-	seedHotel("Hilton", "GB")
-	seedHotel("Hotel-Grand", "CZ")
-	seedHotel("Biskup", "CZ")
+	seedHotel("Hilton", "GB", 10)
+	seedHotel("Hotel-Grand", "CZ", 10)
+	seedHotel("Biskup", "SK", 2)
 }
 
 func init() {
