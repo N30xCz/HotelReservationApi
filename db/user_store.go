@@ -28,10 +28,10 @@ type MongoUserStore struct {
 	coll   *mongo.Collection
 } // Implementace UserStore pro MongoDB Interface
 
-func NewMongoUserStore(client *mongo.Client, dbName string) *MongoUserStore {
+func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 	return &MongoUserStore{
 		client: client,
-		coll:   client.Database(dbName).Collection(userColl),
+		coll:   client.Database(DBNAME).Collection(userColl),
 	}
 }
 func (s *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
