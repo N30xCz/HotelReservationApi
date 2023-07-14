@@ -49,17 +49,20 @@ func (params CreateUserParams) Validate() map[string]string {
 		errors["Password"] = fmt.Sprintf("Password length should be atleast %d characters", minPasswordLen)
 	}
 
-	if !isEmailValid(params.Email) {
+	if !IsEmailValid(params.Email) {
 		errors["email"] = "This is not valid format of the email address"
 
 	}
 	return errors
 }
-func isEmailValid(email string) bool {
+func IsEmailValid(email string) bool {
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	match, _ := regexp.MatchString(pattern, email)
 	return match
 
+}
+func IsPasswordValid(encpw string, pw string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(encpw), []byte(pw)) == nil
 }
 
 type User struct {
