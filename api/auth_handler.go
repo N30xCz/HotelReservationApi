@@ -3,10 +3,13 @@ package api
 import (
 	"errors"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/N30xCz/HotelReservationApi/db"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -24,6 +27,10 @@ type AuthParams struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+type AuthResponse struct {
+	User  *types.User `json:"user"`
+	Token string      `json:"token"`
+}
 
 func (a *AuthHandler) HandleAuthenticate(c *fiber.Ctx) error {
 	var params AuthParams
@@ -40,7 +47,26 @@ func (a *AuthHandler) HandleAuthenticate(c *fiber.Ctx) error {
 	if !types.IsPasswordValid(user.EncryptedPassword, params.Password) {
 		fmt.Errorf("invalid credentials")
 	}
-	fmt.Println("Authenticated user --> ", user)
+	resp := AuthResponse{
+		User:  user,
+		Token: createTokenFromUser(user),
+	}
 
-	return nil
+	return c.JSON(resp)
+}
+func createTokenFromUser(user *types.User) string {
+	now := time.Now()
+	expires := now.Add(time.Hour * 4).Unix()
+	claims := jwt.MapClaims{
+		"id":      user.ID,
+		"email":   user.Email,
+		"expires": expires,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	secret := os.Getenv("JWT_SECRET")
+	tokenStr, err := token.SignedString([]byte(secret))
+	if err != nil {
+		fmt.Println("failed to sign token with secret")
+	}
+	return tokenStr
 }
