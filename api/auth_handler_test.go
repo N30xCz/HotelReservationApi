@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
@@ -29,6 +30,44 @@ func insertTestUser(t *testing.T, userStore db.UserStore) *types.User {
 		t.Fatal(err)
 	}
 	return user
+}
+func TestAuthenticateWrongPassword(t *testing.T) {
+
+	tdb := setup(t)
+	defer tdb.teardown(t)
+	app := fiber.New()
+	AuthHandler := NewAuthHandler(tdb.UserStore)
+	app.Post("/auth", AuthHandler.HandleAuthenticate)
+
+	params := AuthParams{
+		Email:    "pedroEscobar@email.cz",
+		Password: "SuperSecrdwwdwdwdwdetPassword69",
+	}
+
+	b, _ := json.Marshal(params)
+	req := httptest.NewRequest("POST", "/auth", bytes.NewReader(b))
+
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+
+		t.Error(err)
+	}
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("expected status of 400 but got : %d", resp.StatusCode)
+	}
+
+	var genResp genericResp
+
+	if err := json.NewDecoder(resp.Body).Decode(&genResp); err != nil {
+		t.Fatal(err)
+	}
+	if genResp.Type != "error" {
+		t.Fatalf("expected gen response type to be error but got %s", genResp.Type)
+	}
+	if genResp.Msg != "invalid credentials" {
+		t.Fatalf("expected gen response msg to be : invalid credentials but got %s", genResp.Msg)
+	}
 }
 func TestAuthenticateSuccess(t *testing.T) {
 
