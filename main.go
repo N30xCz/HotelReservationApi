@@ -58,6 +58,7 @@ func main() {
 	apiv1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms)
 	apiv1.Get("/hotel/:id", hotelHandler.HandleGetHotel)
 	// Book Handlers
+	apiv1.Get("/rooms", roomHandler.HandleGetRooms)
 	apiv1.Post("/room/:id/book", roomHandler.HandleBookRoom)
 	app.Listen(":5000")
 }
