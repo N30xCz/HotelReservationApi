@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/N30xCz/HotelReservationApi/api"
 	"github.com/N30xCz/HotelReservationApi/db"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,6 +34,7 @@ func SeedUser(fname, lname, email, password string, isAdmin bool) {
 	}
 	user.IsAdmin = isAdmin
 	_, err = userStore.InsertUser(ctx, user)
+	fmt.Printf("%s --> %s\n", user.Email, api.CreateTokenFromUser(user))
 }
 
 func seedHotel(name string, location string, raiting int) {

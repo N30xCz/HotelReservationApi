@@ -13,7 +13,7 @@ func AdminAuth(c *fiber.Ctx) error {
 		return fmt.Errorf("not authorized")
 	}
 	if !user.IsAdmin {
-		return fmt.Errorf("not authorized")
+		return fmt.Errorf("user is not Admin")
 	}
 	return c.Next()
 }
