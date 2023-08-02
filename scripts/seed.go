@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/N30xCz/HotelReservationApi/api"
 	"github.com/N30xCz/HotelReservationApi/db"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,17 +21,20 @@ var (
 	ctx        = context.Background()
 )
 
-func SeedUser(fname, lname, email string) {
+func SeedUser(fname, lname, email, password string, isAdmin bool) {
+
 	user, err := types.NewUserFromParams(types.CreateUserParams{
 		Email:     email,
 		FirstName: fname,
 		LastName:  lname,
-		Password:  "SuperSecretPassword69",
+		Password:  password,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
+	user.IsAdmin = isAdmin
 	_, err = userStore.InsertUser(ctx, user)
+	fmt.Printf("%s --> %s\n", user.Email, api.CreateTokenFromUser(user))
 }
 
 func seedHotel(name string, location string, raiting int) {
@@ -74,7 +79,8 @@ func main() {
 	seedHotel("Hilton", "GB", 10)
 	seedHotel("Hotel-Grand", "CZ", 10)
 	seedHotel("Biskup", "SK", 2)
-	SeedUser("Pedro", "Escobar", "pedroEscobar@email.cz")
+	SeedUser("Pedro", "Escobar", "pedroEscobar@email.cz", "SuperSecretPassword69", false)
+	SeedUser("admin", "admin", "admin@admin.cz", "admin", true)
 }
 
 func init() {
