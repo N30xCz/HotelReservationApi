@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/N30xCz/HotelReservationApi/db"
@@ -43,4 +44,31 @@ func (h *BookingHandler) HandleGetBooking(c *fiber.Ctx) error {
 		})
 	}
 	return c.JSON(booking)
+}
+func (h *BookingHandler) HandleCancleBooking(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	booking, err := h.store.Booking.GetBookingByID(ctx.Context(), id)
+	if err != nil {
+		return err
+	}
+	user, err := getAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+	if booking.UserID != user.ID {
+		return ctx.Status(http.StatusUnauthorized).JSON(genericResp{
+			Type: "error",
+			Msg:  "Not Authorized",
+		})
+	}
+
+	if err = h.store.Booking.UpdateBooking(context.Background(), id, bson.M{"canceled": true}); err != nil {
+		return err
+	}
+
+	return ctx.JSON(genericResp{
+		Type: "Msg",
+		Msg:  "Booking was updated",
+	})
+
 }
