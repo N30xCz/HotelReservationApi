@@ -8,6 +8,7 @@ import (
 
 	"github.com/N30xCz/HotelReservationApi/api"
 	"github.com/N30xCz/HotelReservationApi/db"
+	"github.com/N30xCz/HotelReservationApi/db/fixtures"
 	"github.com/N30xCz/HotelReservationApi/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -90,7 +91,25 @@ func seedBooking(userID, roomID primitive.ObjectID, fDate, tillDate time.Time, n
 }
 
 func main() {
+	var err error
+	ctx := context.Background()
+	client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := client.Database(db.DBNAME).Drop(ctx); err != nil {
+		log.Fatal(err)
+	}
+	hotelStore = db.NewHotelStore(client)
+	store := db.Store{
+		User:  db.NewMongoUserStore(client),
+		Hotel: hotelStore,
+		Room:  db.NewRoomStore(client, hotelStore),
+	}
+	user := fixtures.AddUser(&store, "Pedro", "Escobar", false)
+	fmt.Println(user)
 
+	return
 	seedHotel("Hilton", "GB", 10)
 	seedHotel("Hotel-Grand", "CZ", 10)
 	seedHotel("Biskup", "SK", 2)
